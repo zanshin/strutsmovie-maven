@@ -1,0 +1,10 @@
+This is a sandbox application originally created in Struts 1 as a learning exercise.
+
+In this form it will be converted to Struts 2, the build process switched from Ant to Maven 2, and EJB 3 used
+for the persistence layer.
+
+Oh, and git (via Github) will be used as the version control in order to learn that as well.
+
+Finally, IntelliJ IDEA is being used at the IDE.
+
+All kinds of fun.
