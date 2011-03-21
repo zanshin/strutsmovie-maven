@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.0//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_0.dtd">
+
+<struts-config>
+
+  <!-- ========== Form Bean Definitions =================================== -->
+  <form-beans>
+
+    <form-bean name="movieForm"
+                    type="movielist.form.MovieForm"/>
+
+    <form-bean name="logonForm"
+                    type="movielist.form.LogonForm"/>
+
+  </form-beans>
+
+  <!-- ========== Global Forward Definitions ============================== -->
+  <global-forwards>
+
+    <forward name="logoff" redirect="true" path="/do/Logon"/>
+    <forward name="displayMovies" redirect="true" path="/do/DisplayMovies"/>
+    <forward name="generalError" path="/pages/generalerror.jsp"/>
+
+  </global-forwards>
+
+
+  <!-- ========== Action Mapping Definitions ============================== -->
+  <action-mappings>
+
+    <action path="/DisplayMovies"
+            type="movielist.action.DisplayMoviesAction">
+      <forward name="success" path="/pages/displaymovies.jsp"/>
+    </action>
+    
+    <action path="/ClearList"
+            type="movielist.action.ClearListAction">
+    </action>
+    
+    <action path="/AddMovie"
+            type="movielist.action.AddMovieAction">
+      <forward name="success" path="/templatePages/addmovie.jsp"/>
+    </action>
+    
+    <action path="/ChangeMovie"
+            type="movielist.action.ChangeMovieAction"
+            name="movieForm"
+            scope="request"
+            validate="false">
+      <forward name="success" path="/pages/changemovie.jsp"/>
+    </action>
+    
+    <action path="/SaveNewMovie"
+            type="movielist.action.SaveNewMovieAction"
+            name="movieForm"
+            scope="request"
+            input="/templatePages/addmovie.jsp">
+    </action>
+
+    <action path="/UpdateDeleteMovie"
+            type="movielist.action.UpdateDeleteMovieAction"
+            name="movieForm"
+            scope="request"
+            input="/pages/changemovie.jsp">
+    </action>
+
+	<!-- actions for logon -->    
+    <action path="/Logon"
+            type="movielist.action.LogonAction"
+            name="logonForm"
+            scope="request"
+            validate="false">
+      <forward name="success" path="/templatePages/logon.jsp"/>
+    </action>
+
+    <action path="/TryLogon"
+            type="movielist.action.TryLogonAction"
+            name="logonForm"
+            scope="request"
+            input="/templatePages/logon.jsp">
+      <forward name="failure" path="/templatePages/logon.jsp"/>
+    </action>
+
+	<!-- The standard administrative actions available with Struts -->
+    <!-- These would be either omitted or protected by security -->
+    <!-- in a real application deployment -->
+    <action    path="/admin/addFormBean"
+               type="org.apache.struts.actions.AddFormBeanAction"/>
+    <action    path="/admin/addForward"
+               type="org.apache.struts.actions.AddForwardAction"/>
+    <action    path="/admin/addMapping"
+               type="org.apache.struts.actions.AddMappingAction"/>
+    <action    path="/admin/reload"
+               type="org.apache.struts.actions.ReloadAction"/>
+    <action    path="/admin/removeFormBean"
+               type="org.apache.struts.actions.RemoveFormBeanAction"/>
+    <action    path="/admin/removeForward"
+               type="org.apache.struts.actions.RemoveForwardAction"/>
+    <action    path="/admin/removeMapping"
+               type="org.apache.struts.actions.RemoveMappingAction"/>
+    
+  </action-mappings>
+</struts-config>

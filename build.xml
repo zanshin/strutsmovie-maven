@@ -1,0 +1,96 @@
+<project name="StrutsMovie" default="main" basedir=".">
+
+	<!-- This is a basic build script, only the minimums here -->
+
+	<!-- tell Ant to use my environment variables -->
+	<property environment="env" />
+	
+	<!-- property file="./build.properties" / -->
+
+	<!-- setup some local use varialbles -->
+	<property name="build.compiler"	value="modern" />
+	<property name="build.dir"		value="./WEB-INF/classes" />
+	<property name="src.dir"		value="./src" />
+	<property name="lib.dir"		value="./WEB-INF/lib" />
+	<property name="jbosslib.dir"	value="/usr/local/jboss/server/default/lib" />
+	<property name="servlet.jar"	value="/usr/local/jboss/server/default/lib/servlet-api.jar" />
+	<property name="war.file"		value="StrutsMovie" />
+	<property name="war.file.name"	value="${war.file}.war" />
+    <property name="jboss.home"		value="/usr/local/jboss" />
+	<property name="deploy.dir"		value="${jboss.home}/server/default/deploy" />
+
+	<path id="project.class.path">
+		<!-- <fileset dir="./WEB-INF/lib/">
+			<include name="**/*.jar" />
+			<include name="./WEB-INF/calc.fs/ApplicationResources.properties" /> 
+		</fileset> -->
+		<pathelement path="${src.dir}" />
+		<pathelement path="${servlet.jar}" />
+		<pathelement path="${lib.dir}/log4j.jar" />
+		<pathelement path="${lib.dir}/commons-beanutils.jar" />
+		<pathelement path="${lib.dir}/commons-collections.jar" />
+		<pathelement path="${lib.dir}/commons-digester.jar" />
+		<pathelement path="${lib.dir}/commons-fileupload.jar" />
+		<pathelement path="${lib.dir}/commons-lang.jar" />
+		<pathelement path="${lib.dir}/commons-logging.jar" />
+		<pathelement path="${lib.dir}/commons-validator.jar" />
+		<pathelement path="${lib.dir}/jakarta-oro.jar" />
+		<pathelement path="${lib.dir}/struts.jar" />
+		<pathelement path="${src.dir}/ApplicationResources.properties" />
+		<pathelement path="${build.dir}" />
+	</path>
+
+	<target name="clean">
+		<delete dir="${build.dir}" includeEmptyDirs="true" />
+	</target>
+
+	<target name="prep">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="compile">
+		<javac	srcdir="${src.dir}"
+					destdir="${build.dir}"
+					debug="on"
+					deprecation="on">
+			<include name="**/*.java" />
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+	
+	<!-- Now that the production source code has compiled, let's copy all other files to the production build directory. -->
+	<target name="copyfiles" depends="compile">
+		<copy todir="${build.dir}">
+			<fileset dir="${src.dir}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="cleanWebApp">
+		<delete file="${deploy.dir}/${war.file.name}" />
+		<delete dir="${deploy.dir}/${war.file}" includeEmptyDirs="true" />
+	</target>
+
+	<target name="war">
+		<war warfile="${war.file.name}" webxml="src/main/config/web.xml">
+			<fileset	dir="./" 
+						includes="**/*.*" 
+						excludes="*.war, **/*.nbattrs, web.xml, **/WEB-INF/**/*.*, **/project-files/**/*.*" 
+			/>
+			<webinf	dir="./WEB-INF" includes="**/*" excludes="web.xml, **/*.jar" />
+			<lib 		dir="./WEB-INF/lib" />
+			<classes 	dir="${build.dir}" includes="**/*.properties" />
+		</war>
+	</target>
+
+	<target name="deploy">
+		<copy todir="${deploy.dir}">
+			<fileset dir="./" includes="${war.file.name}" />
+		</copy>
+	</target>
+
+
+	<target name="main" depends="clean, prep, cleanWebApp, compile, copyfiles, war, deploy" />
+
+</project>
